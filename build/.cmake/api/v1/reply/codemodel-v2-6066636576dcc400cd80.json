@@ -1,0 +1,116 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-dcd6f286b563513c810b.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						3
+					]
+				},
+				{
+					"build" : "examples",
+					"jsonFile" : "directory-examples-Debug-1c8b83b621b6ef38a245.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "examples",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "elfplusplus",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "elf_walk::@714eac15f71a94114fdf",
+					"jsonFile" : "target-elf_walk-Debug-2771529a45192d171f3c.json",
+					"name" : "elf_walk",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "elfdump::@714eac15f71a94114fdf",
+					"jsonFile" : "target-elfdump-Debug-f104becd8082d20d83a6.json",
+					"name" : "elfdump",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "elfmonitor::@714eac15f71a94114fdf",
+					"jsonFile" : "target-elfmonitor-Debug-f92ce547cbce8a9a34f4.json",
+					"name" : "elfmonitor",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "elfplusplus::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-elfplusplus-Debug-af4eaeb431e0b56577de.json",
+					"name" : "elfplusplus",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "feature_extractor::@714eac15f71a94114fdf",
+					"jsonFile" : "target-feature_extractor-Debug-6d1979cff02f2d43d05e.json",
+					"name" : "feature_extractor",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/kardon/eclipse-workspace/elfplusplus/build",
+		"source" : "/home/kardon/eclipse-workspace/elfplusplus"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
