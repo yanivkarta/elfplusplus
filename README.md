@@ -1,7 +1,7 @@
 # elfplusplus
 discriminative and generative elf utils framework
 
-![dist](https://github.com/yanivkarta/elfplusplus/blob/main/scripts/wordcloud.png?raw=true)
+![dist](https://github.com/yanivkarta/elfplusplus/blob/main/scripts/dist.png?raw=true)
 
 
 extract features from elf files,creates datasets from local linux distribution, monitor elf files , packages ,distributions,etc...
