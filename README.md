@@ -12,5 +12,13 @@ scripts - contains non optimal python scripts for building datasets from elf fea
 examples - elfpp examples : monitor,elf walk , dump, feature extractor...
 
 
+
+
 ![packages](https://github.com/yanivkarta/elfplusplus/blob/main/scripts/packages.png?raw=true)
+
+
+
+Scores of symbols by classes/labels/packages :
+
+![sym_scores](https://github.com/yanivkarta/elfplusplus/blob/main/scripts/sym_scores.png?raw=true)
 

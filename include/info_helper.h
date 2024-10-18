@@ -1450,23 +1450,7 @@ namespace provallo
 
         }   
         //train with matrix input
-        template<typename U=size_t>
-        void train(const provallo::matrix <T> &input ,const std::vector<U> &labels ) 
-        {
-            //train
-            for (size_t i = 0; i < labels.size(); i++)
-            {
-                this->train(input.row(i),labels[i]);
 
-            }            
-
-        }
-        //train for row:
-        template<typename U=size_t>
-        void train(const provallo::row<T> &input ,const U &label ) 
-        {
-            
-        }
         //refine the generator with EM algorithm :
         //gamma : mixing proportions
         //https://en.wikipedia.org/wiki/Mixture_model#Gaussian_mixture_model
