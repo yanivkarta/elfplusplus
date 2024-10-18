@@ -77,10 +77,6 @@ namespace provallo
     {
         return fisher_information(spike_train, sigma);
     }       
-    real_t kernel_fisher_discriminant_analysis(const std::vector<real_t> &spike_train, real_t sigma = 1.0)
-    {
-        return fisher_information(spike_train, sigma);
-    }
 
     //recognition model :
     //https://en.wikipedia.org/wiki/Recognition_model
