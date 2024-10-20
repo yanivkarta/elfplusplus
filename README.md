@@ -267,6 +267,8 @@ weighted avg       0.93      0.92      0.92    555093
 
 
 ![svcc](https://github.com/yanivkarta/elfplusplus/blob/main/scripts/SVC.png?raw=true)
+
+
 SVC 0.9153421138439864
 
 [[     0    771      0      0      0]
@@ -289,4 +291,185 @@ weighted avg       0.92      0.92      0.91    555093
 
 
 0.9153421138439864
+
+
+
+Examples : 
+
+elfdump - dump sections, mark injectable/non-injectable objects/offsets  :
+
+```
+./examples/elfdump  ./examples/elfmonitor
+
+File: ./examples/elfmonitor
+Mode: 33277
+Size: 416024
+Magic: ELF
+Class: 
+Data: 
+Version: 
+Type: 3
+Machine: 62
+Version: 1
+Entry: 25120
+Flags: 0
+Header size: 64
+Program header offset: 64
+Section header offset: 413912
+Flags: 0
+Header size: 64
+Program header entry size: 56
+Program header entry count: 13
+Section header entry size: 64
+Section header entry count: 33
+Section header string table index: 32
+...
+...
+[injectable section] name: GLIBCXX_3.4.22
+[injectable section] type: 1
+[injectable section] flags: 6
+[injectable] addr: 25120
+[injectable] offset: 25120
+[injectable] size: 107217
+[injectable] link: 0
+[injectable] info: 0
+[injectable] addralign: 16
+[injectable] entsize: 0
+
+
+[injectable section] name: deregister_tm_clones
+[injectable section] type: 1
+[injectable section] flags: 6
+[injectable] addr: 132340
+[injectable] offset: 132340
+[injectable] size: 13
+[injectable] link: 0
+[injectable] info: 0
+[injectable] addralign: 4
+[injectable] entsize: 0
+
+....
+
+
+
+[non-injectable section] name: _ZL6sigint
+[non-injectable section] type: 1
+[non-injectable section] flags: 2
+[non-injectable] addr: 138928
+[non-injectable] offset: 138928
+[non-injectable] size: 10188
+[non-injectable] link: 0
+[non-injectable] info: 0
+[non-injectable] addralign: 4
+[non-injectable] entsize: 0
+
+
+
+
+
+```
+
+feature extractor: 
+
+```
+./examples/feature_extractor /usr/local/lib /usr/bin
+
+[+]link to string table: 0
+[+]link name: __gmon_start__
+[!] unhandled section type 8
+[!]invalid section name
+[+]link to string table: 0
+[+]link name: __gmon_start__
+[!]multiple symbol tables
+[!] unhandled section type 7
+[!] unhandled section type 7
+[!]multiple symbol tables
+[!] unhandled section type 1879048191
+[!] unhandled section type 4
+[!] unhandled section type 4
+[!]multiple dynamic segments
+[!] unhandled section type 8
+[!]multiple symbol tables
+
+...
+
+file id: 10912200 cols:cols: 11319 rows: 11319
+...
+
+
+
+[+] creating feature matrix
+Features Matrix
+===================================================
+||entropy: 1.4254e+07
+||mean: 0.160631
+||min: 0.01
+||max: 1
+||sum: 2.058e+07
+
+[+]/usr/local/lib/python3.10/dist-packages/sqlalchemy/cyextension/util.cpython-310-x86_64-linux-gnu.so::PyUnicode_FromFormat
+
+
+[+] global training matrix size: 13837,11319
+ 
+...
+[+] rowsum[479]4.83001
+[+] rowsum[480]4.83031
+[+] rowsum[481]483
+[+] rowsum[482]4.83016
+...
+...
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PyNumber_Remainder
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PyNumber_Index
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PyCode_NewWithPosOnlyArgs
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PyBytes_Type
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PyBool_Type
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::PySet_Pop
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::.dynsym
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::.init
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::.eh_frame
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/strptime.cpython-310-x86_64-linux-gnu.so::_init
+
+
+
+[+]/usr/local/lib/python3.10/dist-packages/pandas/_libs/tslibs/conversion.cpython-310-x86_64-linux-gnu.so::PyErr_Occurred
+
+
+Features Matrix
+===================================================
+||entropy: 21831.1
+||mean: 0.175604
+||min: 0.01
+||max: 1
+||sum: 33228.7
+||divergence size: 0
+===================================================
+
+....
+
+```
+the feature extractor will attempt to extract features from the elf files in the lib folder and classify / test on the /bin folder
+
+The results are then printed out and csv files of the model are saved.
+ 
+
+This demonstrates unsupervised method to fit for various datasets infered from the data such as security,performance, connectivity,etc... 
 
