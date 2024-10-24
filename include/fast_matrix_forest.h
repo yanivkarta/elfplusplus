@@ -2738,8 +2738,8 @@ class super_tree {
         //max super tree hplanes:
         uint64_t max_super_tree_hplanes=std::numeric_limits<uint32_t>::max();
 
-
-      uint64_t seed=0;
+      //random seed
+        uint64_t seed=0;
       
  };
 

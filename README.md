@@ -9,7 +9,9 @@ extract features from elf files,creates datasets from local linux distribution, 
 
 scripts - contains non optimal python scripts for building datasets from elf features . 
 
-examples - elfpp examples : monitor,elf walk , dump, feature extractor...
+examples - elfpp 
+
+examples : monitor,elf walk , dump, feature extractor...
 
 
 
@@ -473,3 +475,244 @@ The results are then printed out and csv files of the model are saved.
 
 This demonstrates unsupervised method to fit for various datasets infered from the data such as security,performance, connectivity,etc... 
 
+elfwalk:
+
+```   
+./examples/elfwalk /usr/local/lib
+```
+sample output:
+
+```
+File: /usr/local/bin/grpc_php_plugin
+Magic: ELF
+Class: 
+Data: 
+Version: 
+OS/ABI: 
+ABI Version: 
+Type: 3
+Machine: 3e
+Version: 1
+Entry point address: 0x7f480
+Start of program headers: 0x40
+Start of section headers: 0x2549a0
+[+]Program headers: 14
+[+]Section headers: 35
+[+]Section header string table index: 34
+[+][+]Program Header: 0
+[+][+]Type: 6
+[+][+]Offset: 40
+[+][+]Virtual address: 40
+[+][+]Physical address: 40
+[+][+]File offset: 64
+[+][+]Memory size: 784
+[+][+]Flags: 4
+[+][+]Alignment: 8
+[+][+]Program Header: 1
+[+][+]Type: 3
+[+][+]Offset: 350
+[+][+]Virtual address: 350
+[+][+]Physical address: 350
+[+][+]File offset: 848
+[+][+]Memory size: 28
+[+][+]Flags: 4
+[+][+]Alignment: 1
+[+][+]Program Header: 2
+[+][+]Type: 1
+[+][+]Offset: 0
+[+][+]Virtual address: 0
+[+][+]Physical address: 0
+[+][+]File offset: 0
+[+][+]Memory size: 476248
+[+][+]Flags: 4
+[+][+]Alignment: 4096
+[+][+]Program Header: 3
+[+][+]Type: 1
+[+][+]Offset: 75000
+[+][+]Virtual address: 75000
+[+][+]Physical address: 75000
+[+][+]File offset: 479232
+[+][+]Memory size: 1098441
+[+][+]Flags: 5
+[+][+]Alignment: 4096
+[+][+]Program Header: 4
+[+][+]Type: 1
+[+][+]Offset: 182000
+[+][+]Virtual address: 182000
+[+][+]Physical address: 182000
+[+][+]File offset: 1581056
+[+][+]Memory size: 305406
+[+][+]Flags: 4
+[+][+]Alignment: 4096
+[+][+]Program Header: 5
+[+][+]Type: 1
+[+][+]Offset: 1cd8a0
+[+][+]Virtual address: 1ce8a0
+[+][+]Physical address: 1ce8a0
+[+][+]File offset: 1890464
+[+][+]Memory size: 22704
+[+][+]Flags: 6
+[+][+]Alignment: 4096
+[+][+]Program Header: 6
+[+][+]Type: 2
+[+][+]Offset: 1d1798
+[+][+]Virtual address: 1d2798
+[+][+]Physical address: 1d2798
+[+][+]File offset: 1906584
+[+][+]Memory size: 576
+[+][+]Flags: 6
+[+][+]Alignment: 8
+[+][+]Program Header: 7
+[+][+]Type: 4
+[+][+]Offset: 370
+[+][+]Virtual address: 370
+[+][+]Physical address: 370
+[+][+]File offset: 880
+[+][+]Memory size: 48
+[+][+]Flags: 4
+[+][+]Alignment: 8
+[+][+]Program Header: 8
+[+][+]Type: 4
+[+][+]Offset: 3a0
+[+][+]Virtual address: 3a0
+[+][+]Physical address: 3a0
+[+][+]File offset: 928
+[+][+]Memory size: 68
+[+][+]Flags: 4
+[+][+]Alignment: 4
+[+][+]Program Header: 9
+[+][+]Type: 7
+[+][+]Offset: 1cd8a0
+[+][+]Virtual address: 1ce8a0
+[+][+]Physical address: 1ce8a0
+[+][+]File offset: 1890464
+[+][+]Memory size: 32
+[+][+]Flags: 4
+[+][+]Alignment: 16
+[+][+]Program Header: 10
+[+][+]Type: 6474e553
+[+][+]Offset: 370
+[+][+]Virtual address: 370
+[+][+]Physical address: 370
+[+][+]File offset: 880
+[+][+]Memory size: 48
+[+][+]Flags: 4
+[+][+]Alignment: 8
+[+][+]Program Header: 11
+[+][+]Type: 6474e550
+[+][+]Offset: 1908e4
+[+][+]Virtual address: 1908e4
+[+][+]Physical address: 1908e4
+[+][+]File offset: 1640676
+[+][+]Memory size: 31236
+[+][+]Flags: 4
+[+][+]Alignment: 4
+[+][+]Program Header: 12
+[+][+]Type: 6474e551
+[+][+]Offset: 0
+[+][+]Virtual address: 0
+[+][+]Physical address: 0
+[+][+]File offset: 0
+[+][+]Memory size: 0
+[+][+]Flags: 6
+[+][+]Alignment: 16
+[+][+]Program Header: 13
+[+][+]Type: 6474e552
+[+][+]Offset: 1cd8a0
+[+][+]Virtual address: 1ce8a0
+[+][+]Physical address: 1ce8a0
+[+][+]File offset: 1890464
+[+][+]Memory size: 18272
+[+][+]Flags: 4
+[+][+]Alignment: 1
+[+]Section headers: 35
+[+][+]Section Header: 0
+[+][+]Type: 0
+[+][+]Flags: 0
+[+][+]Address: 0
+[+][+]Offset: 0
+[+][+]Size: 0
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 0
+[+][+]Entry size: 0
+[!]Empty section
+[+][+]Section Header: 1
+[+][+]Type: 1
+[+][+]Flags: 2
+[+][+]Address: 350
+[+][+]Offset: 848
+[+][+]Size: 28
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 1
+[+][+]Entry size: 0
+[!]SHT_PROGBITS
+[!]Invalid section: /usr/local/bin/grpc_php_plugin
+[+][+]Section Header: 2
+[+][+]Type: 7
+[+][+]Flags: 2
+[+][+]Address: 370
+[+][+]Offset: 880
+[+][+]Size: 48
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 8
+[+][+]Entry size: 0
+[+][+]Section Header: 3
+[+][+]Type: 7
+[+][+]Flags: 2
+[+][+]Address: 3a0
+[+][+]Offset: 928
+[+][+]Size: 36
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 4
+[+][+]Entry size: 0
+[+][+]Section Header: 4
+[+][+]Type: 7
+[+][+]Flags: 2
+[+][+]Address: 3c4
+[+][+]Offset: 964
+[+][+]Size: 32
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 4
+[+][+]Entry size: 0
+[+][+]Section Header: 5
+[+][+]Type: 6ffffff6
+[+][+]Flags: 2
+[+][+]Address: 3e8
+[+][+]Offset: 1000
+[+][+]Size: 27632
+[+][+]Link: 6
+[+][+]Info: 0
+[+][+]Alignment: 8
+[+][+]Entry size: 0
+[+][+]Section Header: 6
+[+][+]Type: b
+[+][+]Flags: 2
+[+][+]Address: 6fd8
+[+][+]Offset: 28632
+[+][+]Size: 95040
+[+][+]Link: 7
+[+][+]Info: 1
+[+][+]Alignment: 8
+[+][+]Entry size: 24
+[!]SHT_DYNSYM
+[!]Tag: 255865753264588419 343597384334
+[!]Tag: -1484564035636664 54389558871065073
+[!]Tag: 102738[+][+]Flags: 0
+[+][+]Address: 0
+[+][+]Offset: 2443340
+[+][+]Size: 335
+[+][+]Link: 0
+[+][+]Info: 0
+[+][+]Alignment: 1
+[+][+]Entry size: 0
+[!]SHT_STRTAB
+Time taken: 13883094 nanoseconds
+[+]strings extracted: 9141
+=====================
+
+```
