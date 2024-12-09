@@ -224,10 +224,6 @@ bool web_dal::add_to_checksum_queue(const std::string& path,
 	return ret;
 }
 
-
-//run - blocks, should be on a seperate thread.
-void netlink_helper::run() {
-
 	struct cn_msg_non_flex {
 	struct cb_id id;
 
@@ -238,6 +234,11 @@ void netlink_helper::run() {
 	__u16 flags;
 	__u8 *data;
 	};	
+
+//run - blocks, should be on a seperate thread.
+
+void netlink_helper::run() {
+
 
 	int rc;
 	struct
@@ -307,15 +308,16 @@ void netlink_helper::run() {
 			if (nl_sock == -1) {
 				return false;
 			}
+			
 
 			
 			struct __attribute__ ((aligned(NLMSG_ALIGNTO))) {
 					struct nlmsghdr nl_hdr;
 					struct
 						__attribute__ ((__packed__)) {
-							struct cn_msg cn_msg;
+							struct cn_msg_non_flex cn_msg;
 							//avoid padding between cn_msg and cn_mcast:
-							//enum proc_cn_mcast_op cn_mcast; 
+							enum proc_cn_mcast_op cn_mcast; 
 						};
 					} nlcn_msg;
 
@@ -328,9 +330,9 @@ void netlink_helper::run() {
 					nlcn_msg.cn_msg.id.idx = CN_IDX_PROC;
 					nlcn_msg.cn_msg.id.val = CN_VAL_PROC;
 					nlcn_msg.cn_msg.len = sizeof(enum proc_cn_mcast_op);
-					//nlcn_msg.cn_mcast =
-					//		enable ?
-					//				PROC_CN_MCAST_LISTEN : PROC_CN_MCAST_IGNORE;
+					nlcn_msg.cn_mcast =
+							enable ?
+									PROC_CN_MCAST_LISTEN : PROC_CN_MCAST_IGNORE;
 
 					rc = send(nl_sock, &nlcn_msg, sizeof(nlcn_msg), 0);
 					if (rc == -1) {
