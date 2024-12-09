@@ -579,6 +579,8 @@ namespace provallo {
 
     }   
     //double 
+    //check if CPU is X86_64 
+    #if defined(__x86_64__)
     template <> cpu_matrix<double> cpu_matrix<double>::operator*(const cpu_matrix<double> &other) {
      
         cpu_matrix<double> result(this->size1_, other.size2_); 
@@ -608,6 +610,24 @@ namespace provallo {
         return result;
 
     }   
+    #else if defined(__aarch64__)
+    //optimize for aarch64 vector operations:
+    template <> cpu_matrix<double> cpu_matrix<double>::operator*(const cpu_matrix<double> &other) {
+        cpu_matrix<double> result(this->size1_, other.size2_); 
+        for (size_t i = 0; i < this->size1_; i++) {
+            for (size_t j = 0; j < other.size2_; j++) {
+                result.data_[i * result.size2_ + j] = 0.0;
+                for (size_t k = 0; k < this->size2_; k++) {
+                    result.data_[i * result.size2_ + j] += this->data_[i * this->size2_ + k] * other.data_[k * other.size2_ + j];
+                }
+            }
+        }
+        return result;  
+        
+    }
+
+
+    #endif 
     //long double
     template <> cpu_matrix<long double> cpu_matrix<long double>::operator*(const cpu_matrix<long double> &other) {
       __m256d a, b, c;

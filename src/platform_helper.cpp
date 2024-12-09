@@ -1,8 +1,18 @@
 #include "platform_helper.h"
+#ifndef restrict
+#define restrict
+#endif
  #include <sys/socket.h>
+ extern "C" {
 #include <linux/netlink.h>
 #include <linux/connector.h>
-#include <linux/cn_proc.h>
+#include <linux/cn_proc.h>	 
+#include <gnutls/gnutls.h> //for hashing files use gnutls
+#include <gnutls/dane.h> //for hashing files use gnutls
+#include <gnutls/crypto.h> //for hashing files use gnutls
+
+ }
+
 #include <stdbool.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -10,17 +20,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h> 
-#include <gnutls/gnutls.h> //for hashing files use gnutls
-#include <gnutls/dane.h> //for hashing files use gnutls
-#include <gnutls/crypto.h> //for hashing files use gnutls
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <sys/types.h>
 //mmap/munmap
 #include <sys/mman.h>
-#ifndef restrict
-#define restrict
-#endif
+
 #include <fstream>
 #include <sstream>
 #include <map>
@@ -223,7 +228,16 @@ bool web_dal::add_to_checksum_queue(const std::string& path,
 //run - blocks, should be on a seperate thread.
 void netlink_helper::run() {
 
+	struct cn_msg_non_flex {
+	struct cb_id id;
 
+	__u32 seq;
+	__u32 ack;
+
+	__u16 len;		/* Length of the following data */
+	__u16 flags;
+	__u8 *data;
+	};	
 
 	int rc;
 	struct
@@ -231,7 +245,7 @@ void netlink_helper::run() {
 			struct nlmsghdr nl_hdr;
 			struct
 				__attribute__ ((__packed__)) {
-					struct cn_msg cn_msg;
+					struct cn_msg_non_flex cn_msg;
 					struct proc_event proc_ev;
 				};
 			} nlcn_msg;
@@ -250,7 +264,7 @@ void netlink_helper::run() {
 				break;
 			}
 		//success:
-		if (nlcn_msg.proc_ev.what == proc_event::PROC_EVENT_EXEC) {
+		if (nlcn_msg.proc_ev.what == PROC_EVENT_EXEC) {
 					std::string fullpath = get_fullpath(
 							nlcn_msg.proc_ev.event_data.exec.process_pid);
 
@@ -289,15 +303,22 @@ void netlink_helper::run() {
 		//use netlink socket connector
 		bool netlink_helper::proc_listen(bool enable) {
 			int rc;
-			struct
-				__attribute__ ((aligned(NLMSG_ALIGNTO))) {
+
+			if (nl_sock == -1) {
+				return false;
+			}
+
+			
+			struct __attribute__ ((aligned(NLMSG_ALIGNTO))) {
 					struct nlmsghdr nl_hdr;
 					struct
 						__attribute__ ((__packed__)) {
 							struct cn_msg cn_msg;
-							enum proc_cn_mcast_op cn_mcast;
+							//avoid padding between cn_msg and cn_mcast:
+							//enum proc_cn_mcast_op cn_mcast; 
 						};
 					} nlcn_msg;
+
 
 					memset(&nlcn_msg, 0, sizeof(nlcn_msg));
 					nlcn_msg.nl_hdr.nlmsg_len = sizeof(nlcn_msg);
@@ -307,9 +328,9 @@ void netlink_helper::run() {
 					nlcn_msg.cn_msg.id.idx = CN_IDX_PROC;
 					nlcn_msg.cn_msg.id.val = CN_VAL_PROC;
 					nlcn_msg.cn_msg.len = sizeof(enum proc_cn_mcast_op);
-					nlcn_msg.cn_mcast =
-							enable ?
-									PROC_CN_MCAST_LISTEN : PROC_CN_MCAST_IGNORE;
+					//nlcn_msg.cn_mcast =
+					//		enable ?
+					//				PROC_CN_MCAST_LISTEN : PROC_CN_MCAST_IGNORE;
 
 					rc = send(nl_sock, &nlcn_msg, sizeof(nlcn_msg), 0);
 					if (rc == -1) {
