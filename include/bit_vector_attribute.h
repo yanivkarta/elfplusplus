@@ -392,12 +392,11 @@ namespace provallo {
     
     
     //dna sequence:
-    typedef bit_type<uint8_t,2> dna_base; 
-    typedef std::vector<dna_base> dna_sequence; 
-    typedef matrix<dna_base> dna_matrix; 
-    
-    
-    
+    typedef bit_type<uint8_t,2> dna_base;
+    typedef std::vector<dna_base> dna_sequence;
+    typedef std::vector<dna_sequence> dna_sequences;
+    typedef provallo::matrix<dna_base> dna_matrix; 
+
     #pragma pack()
 
 }

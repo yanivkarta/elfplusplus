@@ -58,7 +58,7 @@ namespace provallo
     {
         return joint_distribution(spike_train, stimulus) / marginal_distribution(spike_train);
     }
-    
+
 
     
 
@@ -77,6 +77,10 @@ namespace provallo
     {
         return fisher_information(spike_train, sigma);
     }       
+    real_t kernel_fisher_discriminant_analysis(const std::vector<real_t> &spike_train, real_t sigma = 1.0)
+    {
+        return fisher_information(spike_train, sigma);
+    }
 
     //recognition model :
     //https://en.wikipedia.org/wiki/Recognition_model
@@ -199,25 +203,6 @@ namespace provallo
         {
             _t_step = _t_min;
             _t = _t_min;
-        }
-        void step()
-        {
-            //update the time :
-            _t += _t_step;
-            if(_t > _t_max)
-            {
-                _t = _t_min;
-            }   
-            //generate a spike train :
-            _output = generate();
-            //update the time step :
-            _t_step += _dt;
-            if(_t_step > _t_max)
-            {
-                _t_step = _t_min;
-            }
-            
-        
         }
         void set_sigma(real_t sigma)
         {
@@ -1449,7 +1434,6 @@ namespace provallo
 
 
         }   
-        //train with matrix input
 
         //refine the generator with EM algorithm :
         //gamma : mixing proportions
@@ -1991,19 +1975,8 @@ namespace provallo
             _input = input;
         }
 
-        //step :
-        real_t step()
-        {
-            real_t result = 0.0;
-            _generator.set_input(_input);
-            result = _generator.step();
-            _output = _generator.get_output();
-            return result;
-        }
-
  
     };
-
 
 
 }
