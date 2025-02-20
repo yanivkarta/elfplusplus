@@ -778,7 +778,25 @@ void netlink_helper::run() {
 										std::make_pair(
 												std::hash<std::string>()(path),
 												std::hash<std::string>()(pkg)));
+								this->white_list.insert(
+										std::make_pair(
+												std::hash<std::string>()(path),
+												std::make_pair(
+														component_map[package_key][path],
+														validated)));
+								//update proc_dal:
+								{elfpp::proc_dal dal("elfpp.db"); 
+								dal.set_verified_dist_file(path,
+										component_map[package_key][path], pkg,
+										validated);	}
+
+
+								// add to VERIFIED_DISTRIBUTION_FILE table in db :
+
 							} else {
+								//update proc_dal:
+								
+
 								std::cerr
 										<< "[---][-----] Failed to validate checksum.... consider uploading "
 										<< std::endl;
