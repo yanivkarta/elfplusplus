@@ -31,7 +31,9 @@
 #include <map>
 #include <iostream>
 #include <string>
-
+#include <sstream>
+//std::setfill , std::setw:
+#include <iomanip>
 //#include <wget.h>//for gnutls hash_file
 
 #include <fstream> 
@@ -83,11 +85,13 @@ db_dal::db_dal(const std::string& db_file, const std::string& _name) :
 }
 db_dal::~db_dal() {
 
+#ifdef DEBUG
 	std::chrono::time_point<std::chrono::system_clock> now_ =
 			std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed = now_ - _spoint;
 	std::cout << "[+] db_dal destructor for " << this->component_name
 			<< " took " << elapsed.count() << "to execute " << std::endl;
+#endif
 }
 //returns single K/V entry from global table.
 //for settings (e.g. api-keys , etc... )
@@ -536,22 +540,51 @@ void netlink_helper::run() {
 				//platform package helper:
 				bool package_helper::validate_package_checksums(
 						const std::string& path, const std::string& md5sum) {
-
+					
+					
 					char digest_text[1024] = { };
-					std::string lchecksum;
+					std::string fullpath = path; 
 
+					std::string lchecksum;
+					if (isdigit(path[0]) ) { 
+						fullpath = proc_helper::get_instance()->get_full_path(
+								atoi(path.c_str()));
+								
+					}
 					int err = wget_hash_file("md5", path.c_str(), digest_text,
 							1024);
 					if (err) {
 						std::cerr << "wget_hash_file error returned :" << err
-								<< std::endl;
+								<< std::endl; 
+								return false;
 					} else {
-						lchecksum = digest_text;
+						//copy bytes to lchecksum string 
+						//create hex string from digest_text 
+						//
+						std::stringstream ss; 
+						ss << std::hex << std::setfill('0'); 
+						for (int i = 0; i < 16; i++) {
+							ss << std::setw(2) << static_cast<int>(digest_text[i]&0xff);
+						}
+
+						lchecksum = ss.str();
 
 					}
 					//not safe:
 					//should always convert to byte format.
-					return (lchecksum.compare(md5sum) == 0);
+					bool return_value = (lchecksum.compare(md5sum) == 0);
+					if( !return_value ) {
+						std::cerr << "[-] checksum mismatch for "
+								<< fullpath << " md5sums: " << lchecksum	
+								<< " " << md5sum << std::endl;
+					}
+					else 
+					{
+						std::cout << "[+] checksum match for successful " << fullpath
+								<< std::endl;
+					}
+					return return_value;
+
 
 				}
 
@@ -637,7 +670,7 @@ void netlink_helper::run() {
 						const std::string& orig_file,
 						std::map<std::string, std::string>& _package_hashes) {
 					bool ret = false;
-
+							
 					std::string file_path = "/var/lib/dpkg/info/";
 					file_path += package_file;
 					file_path += ".md5sums";
@@ -651,12 +684,18 @@ void netlink_helper::run() {
 						if (key.length() && key[0] != '/')
 							key = '/' + key;
 						//	std::cout<<"[+] key:" <<key<<"[value]:"<<value << std::endl;
+						//debug:
+
 						_package_hashes.insert(std::make_pair(key, value));
 						if (key.compare(orig_file) == 0) {
 							ret = true;
 							std::cout
 									<< "[+]package file hash found, indexing for caching.";	//
 
+						}else 
+						{
+							std::cout
+									<< "[-]package file hash for "<<orig_file<<" not found, found :"<<key<<" instead. " <<  std::endl;  
 						}
 					}
 					return ret;
@@ -669,13 +708,24 @@ void netlink_helper::run() {
 
 					//for now ignore everything and return true if it's in the whitelist
 					//future work will also validate sha1 on db against file.
+					if(path.length() == 0||isdigit(path[0])|| path[0] == '-') {
+						//get the full ppath from proc_helper:
+						path = proc_helper::get_instance()->get_full_path(
+								std::stoi(path));
+						
 
+					}
 					uint64_t path_hash = std::hash<std::string>()(path);
 					bool bwl = is_white_listed(path_hash);
 					bool validated = false;
-
+					
 					if (bwl)
+					{
+						//white list validated 
+						std::cout<<"[+] white list validated "<<path<<std::endl; 
 						return bwl;
+
+					}
 
 					if (this->path_hash_to_component.find(path_hash)
 							!= std::end(path_hash_to_component)) {
@@ -707,8 +757,11 @@ void netlink_helper::run() {
 						} // if we didn't find it, we probably we should  load it:
 
 						std::map<std::string, std::string> hashes;
+						//get path from pid if path is empty 
+						//read from /proc/path/cmdline and call fill package hashes :
+					
 
-						if (this->fill_package_hashes(pkg, path, hashes)) {
+ 						if (this->fill_package_hashes(pkg, path, hashes)) {
 							std::cout << "[+] updated component hashes for "
 									<< pkg << std::endl;
 							component_map.insert(
@@ -939,18 +992,25 @@ wget_hash_file(const char* algorithm, const char* file, char* digest_text, int d
     uint8_t digest_max[1024];
     //gnutls_hash_algorithm_t hash_algorithm; 
     gnutls_digest_algorithm_t digest_algorithm;
+	//size of the digest in bytes:
+	size_t digest_size = 0;
     if (strcasecmp(algorithm, "md5") == 0) {
         digest_algorithm = GNUTLS_DIG_MD5;
+		digest_size = 16;
     } else if ((strcasecmp(algorithm, "sha1") == 0)||strcasecmp(algorithm, "sha-1") == 0) { 
         digest_algorithm = GNUTLS_DIG_SHA1;
+		digest_size = 20;
     } else if (strcasecmp(algorithm, "sha256") == 0) {
         digest_algorithm = GNUTLS_DIG_SHA256;
+		digest_size = 32;
     } else if (strcasecmp(algorithm, "sha512") == 0) {
         digest_algorithm = GNUTLS_DIG_SHA512;
+		digest_size = 64;
     } else {
         results = -1;
         std::cout << "unknown algorithm:[" << algorithm << "]" << "returning -1" << std::endl; 
-        return results;
+        
+		return results;
     }   
 
     //hash_file(algorithm, file, digest_text, digest_text_size); 
@@ -990,25 +1050,15 @@ wget_hash_file(const char* algorithm, const char* file, char* digest_text, int d
     }
 
     //copy the digest to the output buffer
-    
-
-
-
     //gnutls_hash_get(dig, digest_text, digest_text_size);
     
     munmap(buf, st.st_size);
     close(fd);
     
     gnutls_hash_deinit(dig, digest_max);
+	
+	memcpy(digest_text, digest_max, digest_size);
 
-    
-    //gnutls_hash_deinit(dig);
-
-
-    //copy the digest to the output buffer
-    memcpy(digest_text, digest_max, digest_text_size);
-
-    std::cout << std::endl;
     return results;
 
 }
@@ -1054,7 +1104,13 @@ void file_processor::process_files(file_processor* context) {
 			//checking file is whitelisted:
 
 			if (ppath) {
-
+				 std::string rpath(ppath->c_str());
+				 //if the path is pid : 
+				if (isdigit(rpath[0]) || rpath[0] == '-') {
+					std::cout << "[=] process whitelisted (pid) : "
+							<< *ppath << std::endl;
+					continue;
+				}
 				//check cache hit:
 				if (!(package_helper::get_instance()->is_validated(
 						*ppath))) {

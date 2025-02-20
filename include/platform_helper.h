@@ -165,7 +165,7 @@ struct ProcInfo {
 	std::string fullpath; //from cmdline
 };
 
-class proc_helper {
+class proc_helper: public safe_singleton<proc_helper> {
 public:
 	proc_helper() {
 	}
@@ -619,8 +619,7 @@ protected:
 	std::thread* _dispatch;
 	std::thread* _processing;
 	std::map<uint64_t, std::pair<std::string, std::string>> _whitelist;
-
-	elfpp::safe_queue<std::recursive_mutex, std::string> _rxQ;
+ 	elfpp::safe_queue<std::recursive_mutex, std::string> _rxQ;
 	elfpp::safe_queue<std::recursive_mutex, file_processor::file_system_event> _txQ;
 	std::vector<std::pair<reg_callback, void*> > _callbacks;
 
